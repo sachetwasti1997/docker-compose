@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+  
+  mongo-express-app:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: secret
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'false'

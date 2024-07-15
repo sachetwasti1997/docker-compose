@@ -1,0 +1,62 @@
+Docker Network:
+    - Group of containers such that each container knows to talk to each other.
+    - It allows us to separate group of containers from another group of containers
+* Every time a container is created docker attaches it to a separate network, thus the only
+  way to connect to a container is by port binding  
+
+** swasti@192 ~ % docker network ls // lists all the networks present
+NETWORK ID     NAME      DRIVER    SCOPE
+46ecf48bc751   bridge    bridge    local
+735e5a6461fd   host      host      local
+1758f7245103   none      null      local
+
+These three networks are created when docker is installed
+Here there is a column called DRIVER
+** DRIVER identifies the behaviour of the network
+---> If we take a container and attach to a network whose DRIVER is NULL, then it will prevent all network
+     access from that container
+---> If we connect container to network whose driver type is bridge then only the containers
+     inside the network will be able to connect to each other
+---> The network with the driver type host allows direct access from the localhost
+
+********************
+swasti@192 ~ % docker inspect mongo_db
+[
+    {
+       .............
+       ..
+       ..
+       ..
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null,
+                    "NetworkID": "46ecf48bc751018bbf11a047c58aae281db90d0553dd6b592a7c84e041717092",
+                    "EndpointID": "d1a9621b9c70158263fa622a0bfe110410a05cd55350a6bd830a9ef6c1bc06ba",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        }
+    }
+]
+
+We can see that for a image running docker by default creates a network
+If we do not specify a network while creating docker image, by default it will create the image
+in the first bridge nework that is available
+
+**** docker network create net1 ****
+This command will create by default a bridge network
+NETWORK ID     NAME      DRIVER    SCOPE
+46ecf48bc751   bridge    bridge    local
+735e5a6461fd   host      host      local
+d0091c0c5e2c   net1      bridge    local
+1758f7245103   none      null      loca
